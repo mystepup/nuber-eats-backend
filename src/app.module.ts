@@ -38,7 +38,7 @@ import { DATABASE } from "@/src/config/configuration.type";
                     username: database.user,
                     password: database.password,
                     database: database.name,
-                    entities: [],
+                    entities: [__dirname + "/**/*.entity{.ts,.js}"],
                     synchronize: true,
                     logging: true,
                 };
