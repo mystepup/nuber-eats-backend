@@ -1,13 +1,19 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { ArgsType, Field, InputType, PartialType } from "@nestjs/graphql";
+import { CreateRestaurantDto } from "@/src/restaurants/dtos/create-restaurant.dto";
+import { IsString, ValidateNested } from "class-validator";
+import { Type } from "class-transformer";
 
 @InputType()
+class UpdateRestaurantInputType extends PartialType(CreateRestaurantDto) {}
+
+@ArgsType()
 export class UpdateRestaurantDto {
     @Field(() => String)
-    name: string;
+    @IsString()
+    id: string;
 
-    @Field(() => Boolean)
-    isVegan: boolean;
-
-    @Field(() => String)
-    ownerName: string;
+    @Field(() => UpdateRestaurantInputType)
+    @ValidateNested()
+    @Type(() => UpdateRestaurantInputType)
+    data: UpdateRestaurantInputType;
 }

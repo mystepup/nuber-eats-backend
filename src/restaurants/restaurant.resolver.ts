@@ -17,15 +17,28 @@ export class RestaurantResolver {
         return this.restaurantService.getAll();
     }
 
-    @Mutation(() => RestaurantEntity)
+    @Mutation(() => Boolean)
     createRestaurant(
-        @Args() { name, isVegan, ownerName }: CreateRestaurantDto,
-    ) {
-        return { name, isVegan, ownerName };
+        @Args("input") createRestaurantDto: CreateRestaurantDto,
+    ): boolean {
+        console.log(createRestaurantDto);
+        try {
+            this.restaurantService.createRestaurant(createRestaurantDto);
+            return true;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
     }
 
-    @Mutation(() => RestaurantEntity)
-    updateRestaurant(@Args("updateRestaurantInput") dto: UpdateRestaurantDto) {
-        return { ...dto };
+    @Mutation(() => Boolean)
+    updateRestaurant(@Args() updateRestaurantDto: UpdateRestaurantDto) {
+        try {
+            this.restaurantService.updateRestaurant(updateRestaurantDto);
+            return true;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
     }
 }

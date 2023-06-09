@@ -8,7 +8,7 @@ type RestaurantEntity {
   updatedAt: DateTime!
   name: String!
   isVegan: Boolean!
-  ownerName: String!
+  address: String!
 }
 
 """
@@ -22,12 +22,18 @@ type Query {
 }
 
 type Mutation {
-  createRestaurant(name: String!, isVegan: Boolean!, ownerName: String!): RestaurantEntity!
-  updateRestaurant(updateRestaurantInput: UpdateRestaurantDto!): RestaurantEntity!
+  createRestaurant(input: CreateRestaurantDto!): Boolean!
+  updateRestaurant(id: String!, data: UpdateRestaurantInputType!): Boolean!
 }
 
-input UpdateRestaurantDto {
+input CreateRestaurantDto {
   name: String!
-  isVegan: Boolean!
-  ownerName: String!
+  isVegan: Boolean! = true
+  address: String!
+}
+
+input UpdateRestaurantInputType {
+  name: String
+  isVegan: Boolean = true
+  address: String
 }
