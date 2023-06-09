@@ -39,7 +39,7 @@ import { DATABASE } from "@/src/config/configuration.type";
                     password: database.password,
                     database: database.name,
                     entities: [__dirname + "/**/*.entity{.ts,.js}"],
-                    synchronize: true,
+                    synchronize: process.env.NODE_ENV !== "prod",
                     logging: true,
                 };
             },
