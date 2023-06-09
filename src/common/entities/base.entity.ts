@@ -7,7 +7,7 @@ import { Field, ObjectType } from "@nestjs/graphql";
 
 @ObjectType()
 export class BaseEntity {
-    @Field(() => Date)
+    @Field(() => String)
     @PrimaryGeneratedColumn()
     id: string;
 

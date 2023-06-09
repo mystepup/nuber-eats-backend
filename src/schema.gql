@@ -2,13 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type RestaurantEntity {
-  id: DateTime!
+type CreateUserOutput {
+  id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  name: String!
-  isVegan: Boolean!
-  address: String!
+  email: String!
+  role: Role!
 }
 
 """
@@ -16,24 +15,32 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+enum Role {
+  Client
+  Owner
+  Delivery
+}
+
+type LoginOutput {
+  token: String!
+}
+
 type Query {
-  isPizzaGood: Boolean!
-  restaurants: [RestaurantEntity!]!
+  hi: Boolean!
 }
 
 type Mutation {
-  createRestaurant(input: CreateRestaurantDto!): Boolean!
-  updateRestaurant(id: String!, data: UpdateRestaurantInputType!): Boolean!
+  createUser(input: CreateUserInput!): CreateUserOutput!
+  login(input: LoginInput!): LoginOutput!
 }
 
-input CreateRestaurantDto {
-  name: String!
-  isVegan: Boolean! = true
-  address: String!
+input CreateUserInput {
+  email: String!
+  password: String!
+  role: Role!
 }
 
-input UpdateRestaurantInputType {
-  name: String
-  isVegan: Boolean = true
-  address: String
+input LoginInput {
+  email: String!
+  password: String!
 }

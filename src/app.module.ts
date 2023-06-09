@@ -3,12 +3,12 @@ import { AppController } from "@/src/app.controller";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { join } from "path";
-import { RestaurantModule } from "@/src/restaurants/restaurant.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import getConfig from "@/src/config/configuration";
 import Joi from "joi";
 import { DATABASE } from "@/src/config/configuration.type";
+import { UserModule } from "@/src/users/user.module";
 
 @Module({
     imports: [
@@ -44,7 +44,7 @@ import { DATABASE } from "@/src/config/configuration.type";
                 };
             },
         }),
-        RestaurantModule,
+        UserModule,
     ],
     controllers: [AppController],
     providers: [],
