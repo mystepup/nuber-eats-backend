@@ -4,12 +4,14 @@ import { UserEntity } from "@/src/users/entities/user.entity";
 import { Repository } from "typeorm";
 import { CreateUserInput } from "@/src/users/dtos/create-user.dto";
 import { LoginInput } from "@/src/users/dtos/login.dto";
+import { JwtService } from "@/src/jwt/jwt.service";
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity)
         private readonly users: Repository<UserEntity>,
+        private readonly jwtService: JwtService,
     ) {}
 
     createUser({
@@ -23,8 +25,11 @@ export class UserService {
     async login({ email, password }: LoginInput) {
         const user = await this.users.findOneOrFail({ where: { email } });
         const ok = await user.checkPassword(password);
+
+        const token = this.jwtService.sign(user.id);
+
         if (ok) {
-            return "lalala";
+            return token;
         } else {
             throw new Error("password mismatch");
         }

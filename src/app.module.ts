@@ -9,6 +9,7 @@ import getConfig from "@/src/config/configuration";
 import Joi from "joi";
 import { DATABASE } from "@/src/config/configuration.type";
 import { UserModule } from "@/src/users/user.module";
+import { JwtModule } from "@/src/jwt/jwt.module";
 
 @Module({
     imports: [
@@ -43,6 +44,9 @@ import { UserModule } from "@/src/users/user.module";
                     logging: true,
                 };
             },
+        }),
+        JwtModule.forRoot({
+            privateKey: process.env.JWT_PRIVATE_KEY,
         }),
         UserModule,
     ],
