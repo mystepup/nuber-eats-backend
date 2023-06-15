@@ -4,12 +4,14 @@ import { UserEntity } from "@/src/users/entities/user.entity";
 import { Repository } from "typeorm";
 import { CreateUserInput } from "@/src/users/dtos/create-user.dto";
 import { LoginInput } from "@/src/users/dtos/login.dto";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity)
         private readonly users: Repository<UserEntity>,
+        private readonly jwtService: JwtService,
     ) {}
 
     createUser({
@@ -24,9 +26,13 @@ export class UserService {
         const user = await this.users.findOneOrFail({ where: { email } });
         const ok = await user.checkPassword(password);
         if (ok) {
-            return "lalala";
+            return this.jwtService.sign({ id: user.id });
         } else {
             throw new Error("password mismatch");
         }
+    }
+
+    findById(id: string): Promise<UserEntity> {
+        return this.users.findOneByOrFail({ id });
     }
 }

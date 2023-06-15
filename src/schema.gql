@@ -25,8 +25,16 @@ type LoginOutput {
   token: String!
 }
 
+type AuthUserOutput {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  email: String!
+  role: Role!
+}
+
 type Query {
-  hi: Boolean!
+  me: AuthUserOutput!
 }
 
 type Mutation {

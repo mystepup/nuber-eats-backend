@@ -4,17 +4,25 @@ import {
     CreateUserOutput,
 } from "@/src/users/dtos/create-user.dto";
 import { UserService } from "@/src/users/user.service";
-import { BadRequestException, NotFoundException } from "@nestjs/common";
+import {
+    BadRequestException,
+    NotFoundException,
+    UseGuards,
+} from "@nestjs/common";
 import { LoginInput, LoginOutput } from "@/src/users/dtos/login.dto";
 import { EntityNotFoundError } from "typeorm";
+import { AuthGuard } from "@/src/auth/auth.guard";
+import { AuthUser } from "@/src/auth/auth-user.decorator";
+import { AuthUserDto, AuthUserOutput } from "@/src/users/dtos/auth-user.dto";
 
 @Resolver()
 export class UserResolver {
     constructor(private readonly userService: UserService) {}
 
-    @Query(() => Boolean)
-    hi() {
-        return true;
+    @UseGuards(AuthGuard)
+    @Query(() => AuthUserOutput)
+    me(@AuthUser() user: AuthUserDto) {
+        return user;
     }
 
     @Mutation(() => CreateUserOutput)
