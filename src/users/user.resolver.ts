@@ -1,8 +1,4 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
-import {
-    CreateUserInput,
-    CreateUserOutput,
-} from "@/src/users/dtos/create-user.dto";
 import { UserService } from "@/src/users/user.service";
 import {
     BadRequestException,
@@ -13,23 +9,38 @@ import { LoginInput, LoginOutput } from "@/src/users/dtos/login.dto";
 import { EntityNotFoundError } from "typeorm";
 import { AuthGuard } from "@/src/auth/auth.guard";
 import { AuthUser } from "@/src/auth/auth-user.decorator";
-import { AuthUserDto, AuthUserOutput } from "@/src/users/dtos/auth-user.dto";
+import { User, UserOutput } from "@/src/users/dtos/user.dto";
+import { CreateUserInput } from "@/src/users/dtos/create-user.dto";
+import { UserProfileInput } from "@/src/users/dtos/user-profile.dto";
 
 @Resolver()
 export class UserResolver {
     constructor(private readonly userService: UserService) {}
 
     @UseGuards(AuthGuard)
-    @Query(() => AuthUserOutput)
-    me(@AuthUser() user: AuthUserDto) {
-        return user;
+    @Query(() => UserOutput)
+    me(@AuthUser() user: User) {
+        return new UserOutput(user);
     }
 
-    @Mutation(() => CreateUserOutput)
+    @Query(() => UserOutput)
+    async userProfile(@Args() { id }: UserProfileInput) {
+        try {
+            const { password, ...user } = await this.userService.findById(id);
+            return new UserOutput(user);
+        } catch (error) {
+            if (error instanceof EntityNotFoundError) {
+                throw new NotFoundException(error.message);
+            }
+            throw new BadRequestException(error.message);
+        }
+    }
+
+    @Mutation(() => UserOutput)
     async createUser(@Args("input") createUserInput: CreateUserInput) {
         try {
             const user = await this.userService.createUser(createUserInput);
-            return new CreateUserOutput(user);
+            return new UserOutput(user);
         } catch (error) {
             throw new BadRequestException(error.message);
         }
