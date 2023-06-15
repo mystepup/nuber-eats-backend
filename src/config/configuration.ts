@@ -11,6 +11,9 @@ export default function getConfig(): Configuration {
             password: process.env.DB_PASSWORD,
             name: process.env.DB_NAME,
         },
+        jwt: {
+            privateKey: process.env.JWT_PRIVATE_KEY,
+        },
     };
 
     const configValidateSchema = Joi.object<Configuration, true>({
@@ -21,7 +24,10 @@ export default function getConfig(): Configuration {
             user: Joi.string().required(),
             password: Joi.string().allow("").required(),
             name: Joi.string().required(),
-        }),
+        }).required(),
+        jwt: Joi.object({
+            privateKey: Joi.string().required(),
+        }).required(),
     });
 
     const validateResult = configValidateSchema.validate(config);

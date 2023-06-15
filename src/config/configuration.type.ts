@@ -1,6 +1,7 @@
 export type Configuration = {
     port: number;
     database: DATABASE;
+    jwt: JWT;
 };
 
 export type DATABASE = {
@@ -9,4 +10,8 @@ export type DATABASE = {
     user: string;
     password: string;
     name: string;
+};
+
+export type JWT = {
+    privateKey: string;
 };
