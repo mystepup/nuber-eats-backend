@@ -5,7 +5,7 @@ import {
     ObjectType,
     registerEnumType,
 } from "@nestjs/graphql";
-import { BeforeInsert, Column, Entity } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity } from "typeorm";
 import { IsEmail, IsEnum, IsString } from "class-validator";
 import bcrypt from "bcrypt";
 
@@ -36,6 +36,7 @@ export class UserEntity extends BaseEntity {
     role: Role;
 
     @BeforeInsert()
+    @BeforeUpdate()
     async hashPassword() {
         this.password = await bcrypt.hash(this.password, 10);
     }

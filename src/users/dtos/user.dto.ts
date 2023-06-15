@@ -11,7 +11,7 @@ export class UserOutput extends PickType(
     ["id", "createdAt", "updatedAt", "email", "role"] as const,
     ObjectType,
 ) {
-    constructor(user: User) {
+    constructor(user: User | UserEntity) {
         super();
         this.id = user.id;
         this.createdAt = user.createdAt;

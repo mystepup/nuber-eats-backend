@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { CreateUserInput } from "@/src/users/dtos/create-user.dto";
 import { LoginInput } from "@/src/users/dtos/login.dto";
 import { JwtService } from "@nestjs/jwt";
+import { EditProfileInput } from "@/src/users/dtos/edit-profile.dto";
 
 @Injectable()
 export class UserService {
@@ -34,5 +35,19 @@ export class UserService {
 
     findById(id: string): Promise<UserEntity> {
         return this.users.findOneByOrFail({ id });
+    }
+
+    async editProfile(
+        id: string,
+        { email, password }: EditProfileInput,
+    ): Promise<UserEntity> {
+        const prevUser = await this.users.findOneByOrFail({ id });
+        if (email) {
+            prevUser.email = email;
+        }
+        if (password) {
+            prevUser.password = password;
+        }
+        return await this.users.save(prevUser);
     }
 }

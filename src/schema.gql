@@ -32,6 +32,7 @@ type Query {
 
 type Mutation {
   createUser(input: CreateUserInput!): UserOutput!
+  editProfile(input: EditProfileInput!): UserOutput!
   login(input: LoginInput!): LoginOutput!
 }
 
@@ -39,6 +40,11 @@ input CreateUserInput {
   email: String!
   password: String!
   role: Role!
+}
+
+input EditProfileInput {
+  email: String
+  password: String
 }
 
 input LoginInput {

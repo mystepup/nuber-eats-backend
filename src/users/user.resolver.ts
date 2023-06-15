@@ -12,6 +12,7 @@ import { AuthUser } from "@/src/auth/auth-user.decorator";
 import { User, UserOutput } from "@/src/users/dtos/user.dto";
 import { CreateUserInput } from "@/src/users/dtos/create-user.dto";
 import { UserProfileInput } from "@/src/users/dtos/user-profile.dto";
+import { EditProfileInput } from "@/src/users/dtos/edit-profile.dto";
 
 @Resolver()
 export class UserResolver {
@@ -42,6 +43,23 @@ export class UserResolver {
             const user = await this.userService.createUser(createUserInput);
             return new UserOutput(user);
         } catch (error) {
+            throw new BadRequestException(error.message);
+        }
+    }
+
+    @UseGuards(AuthGuard)
+    @Mutation(() => UserOutput)
+    async editProfile(
+        @AuthUser() user: User,
+        @Args("input") input: EditProfileInput,
+    ) {
+        try {
+            const edited = await this.userService.editProfile(user.id, input);
+            return new UserOutput(edited);
+        } catch (error) {
+            if (error instanceof EntityNotFoundError) {
+                throw new NotFoundException(error.message);
+            }
             throw new BadRequestException(error.message);
         }
     }
