@@ -11,4 +11,8 @@ export class JwtService {
     sign(userId: string): string {
         return jwt.sign({ id: userId }, this.option.privateKey);
     }
+
+    decode(token: string): string | jwt.JwtPayload {
+        return jwt.decode(token);
+    }
 }

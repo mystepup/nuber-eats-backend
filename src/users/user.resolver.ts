@@ -13,7 +13,7 @@ export class UserResolver {
     constructor(private readonly userService: UserService) {}
 
     @Query(() => Boolean)
-    hi() {
+    me() {
         return true;
     }
 

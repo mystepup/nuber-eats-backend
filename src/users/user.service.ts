@@ -34,4 +34,8 @@ export class UserService {
             throw new Error("password mismatch");
         }
     }
+
+    findById(id: string) {
+        return this.users.findOneByOrFail({ id });
+    }
 }
