@@ -13,10 +13,6 @@ export class VerificationService {
         private readonly users: Repository<UserEntity>,
     ) {}
 
-    async saveVerification(user: UserEntity) {
-        await this.verifications.insert(this.verifications.create({ user }));
-    }
-
     async verifyEmail(code: string) {
         const verification = await this.verifications.findOneOrFail({
             where: { code },

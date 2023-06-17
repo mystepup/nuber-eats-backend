@@ -1,19 +1,21 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "@/src/users/entities/user.entity";
-import { Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import { CreateUserInput } from "@/src/users/dtos/create-user.dto";
 import { LoginInput } from "@/src/users/dtos/login.dto";
 import { JwtService } from "@nestjs/jwt";
 import { EditProfileInput } from "@/src/users/dtos/edit-profile.dto";
-import { VerificationService } from "@/src/verifications/verification.service";
+import { VerificationEntity } from "@/src/verifications/entities/verification.entity";
 
 @Injectable()
 export class UserService {
     constructor(
+        private readonly dataSource: DataSource,
         @InjectRepository(UserEntity)
         private readonly users: Repository<UserEntity>,
-        private readonly verificationService: VerificationService,
+        @InjectRepository(VerificationEntity)
+        private readonly verifications: Repository<VerificationEntity>,
         private readonly jwtService: JwtService,
     ) {}
 
@@ -22,11 +24,26 @@ export class UserService {
         password,
         role,
     }: CreateUserInput): Promise<UserEntity> {
-        const user = await this.users.save(
-            this.users.create({ email, password, role }),
-        );
-        await this.verificationService.saveVerification(user);
-        return user;
+        const queryRunner = this.dataSource.createQueryRunner();
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            const user = await queryRunner.manager.save(
+                this.users.create({ email, password, role }),
+            );
+
+            await queryRunner.manager.save(this.verifications.create({ user }));
+
+            await queryRunner.commitTransaction();
+            return user;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw new Error(error.message);
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     async login({ email, password }: LoginInput) {

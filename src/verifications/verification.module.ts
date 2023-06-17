@@ -8,6 +8,6 @@ import { UserEntity } from "@/src/users/entities/user.entity";
 @Module({
     imports: [TypeOrmModule.forFeature([VerificationEntity, UserEntity])],
     providers: [VerificationResolver, VerificationService],
-    exports: [VerificationService],
+    exports: [],
 })
 export class VerificationModule {}
