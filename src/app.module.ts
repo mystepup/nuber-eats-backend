@@ -16,6 +16,7 @@ import { DATABASE } from "@/src/config/configuration.type";
 import { UserModule } from "@/src/users/user.module";
 import { JwtModule } from "@nestjs/jwt";
 import { JwtMiddleware } from "@/src/auth/jwt.middleware";
+import { VerificationModule } from "@/src/verifications/verification.module";
 
 @Module({
     imports: [
@@ -57,6 +58,7 @@ import { JwtMiddleware } from "@/src/auth/jwt.middleware";
             secret: process.env.JWT_PRIVATE_KEY,
         }),
         UserModule,
+        VerificationModule,
     ],
     controllers: [AppController],
     providers: [],

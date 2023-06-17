@@ -6,21 +6,27 @@ import { CreateUserInput } from "@/src/users/dtos/create-user.dto";
 import { LoginInput } from "@/src/users/dtos/login.dto";
 import { JwtService } from "@nestjs/jwt";
 import { EditProfileInput } from "@/src/users/dtos/edit-profile.dto";
+import { VerificationService } from "@/src/verifications/verification.service";
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity)
         private readonly users: Repository<UserEntity>,
+        private readonly verificationService: VerificationService,
         private readonly jwtService: JwtService,
     ) {}
 
-    createUser({
+    async createUser({
         email,
         password,
         role,
     }: CreateUserInput): Promise<UserEntity> {
-        return this.users.save(this.users.create({ email, password, role }));
+        const user = await this.users.save(
+            this.users.create({ email, password, role }),
+        );
+        await this.verificationService.saveVerification(user);
+        return user;
     }
 
     async login({ email, password }: LoginInput) {

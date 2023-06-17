@@ -3,12 +3,12 @@ import { UserEntity } from "@/src/users/entities/user.entity";
 
 export type User = Pick<
     UserEntity,
-    "id" | "createdAt" | "updatedAt" | "email" | "role"
+    "id" | "createdAt" | "updatedAt" | "email" | "role" | "verified"
 >;
 @ObjectType()
 export class UserOutput extends PickType(
     UserEntity,
-    ["id", "createdAt", "updatedAt", "email", "role"] as const,
+    ["id", "createdAt", "updatedAt", "email", "role", "verified"] as const,
     ObjectType,
 ) {
     constructor(user: User | UserEntity) {
@@ -18,5 +18,6 @@ export class UserOutput extends PickType(
         this.updatedAt = user.createdAt;
         this.email = user.email;
         this.role = user.role;
+        this.verified = user.verified;
     }
 }

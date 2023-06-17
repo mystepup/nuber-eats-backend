@@ -2,16 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type LoginOutput {
-  token: String!
-}
-
-type UserOutput {
+type UserEntity {
   id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   email: String!
+  password: String!
   role: Role!
+  verified: Boolean!
 }
 
 """
@@ -23,6 +21,19 @@ enum Role {
   Client
   Owner
   Delivery
+}
+
+type LoginOutput {
+  token: String!
+}
+
+type UserOutput {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  email: String!
+  role: Role!
+  verified: Boolean!
 }
 
 type Query {
