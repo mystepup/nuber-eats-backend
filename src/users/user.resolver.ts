@@ -9,10 +9,11 @@ import { LoginInput, LoginOutput } from "@/src/users/dtos/login.dto";
 import { EntityNotFoundError } from "typeorm";
 import { AuthGuard } from "@/src/auth/auth.guard";
 import { AuthUser } from "@/src/auth/auth-user.decorator";
-import { User, UserOutput } from "@/src/users/dtos/user.dto";
+import { UserOutput } from "@/src/users/dtos/user.dto";
 import { CreateUserInput } from "@/src/users/dtos/create-user.dto";
 import { UserProfileInput } from "@/src/users/dtos/user-profile.dto";
 import { EditProfileInput } from "@/src/users/dtos/edit-profile.dto";
+import { UserEntity } from "@/src/users/entities/user.entity";
 
 @Resolver()
 export class UserResolver {
@@ -20,12 +21,12 @@ export class UserResolver {
 
     @UseGuards(AuthGuard)
     @Query(() => UserOutput)
-    me(@AuthUser() user: User) {
+    me(@AuthUser() user: UserEntity): UserOutput {
         return new UserOutput(user);
     }
 
     @Query(() => UserOutput)
-    async userProfile(@Args() { id }: UserProfileInput) {
+    async userProfile(@Args() { id }: UserProfileInput): Promise<UserOutput> {
         try {
             const { password, ...user } = await this.userService.findById(id);
             return new UserOutput(user);
@@ -38,7 +39,9 @@ export class UserResolver {
     }
 
     @Mutation(() => UserOutput)
-    async createUser(@Args("input") createUserInput: CreateUserInput) {
+    async createUser(
+        @Args("input") createUserInput: CreateUserInput,
+    ): Promise<UserOutput> {
         try {
             const user = await this.userService.createUser(createUserInput);
             return new UserOutput(user);
@@ -50,9 +53,9 @@ export class UserResolver {
     @UseGuards(AuthGuard)
     @Mutation(() => UserOutput)
     async editProfile(
-        @AuthUser() user: User,
+        @AuthUser() user: UserEntity,
         @Args("input") input: EditProfileInput,
-    ) {
+    ): Promise<UserOutput> {
         try {
             const edited = await this.userService.editProfile(user.id, input);
             return new UserOutput(edited);
@@ -65,10 +68,9 @@ export class UserResolver {
     }
 
     @Mutation(() => LoginOutput)
-    async login(@Args("input") loginInput: LoginInput) {
+    async login(@Args("input") loginInput: LoginInput): Promise<LoginOutput> {
         try {
             const token = await this.userService.login(loginInput);
-
             return new LoginOutput(token);
         } catch (error) {
             if (error instanceof EntityNotFoundError) {

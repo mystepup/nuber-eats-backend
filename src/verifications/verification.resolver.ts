@@ -15,8 +15,8 @@ export class VerificationResolver {
         try {
             await this.verificationService.verifyEmail(code);
             return { ok: true };
-        } catch (e) {
-            throw new BadRequestException(e.message);
+        } catch (error) {
+            throw new BadRequestException(error.message);
         }
     }
 }

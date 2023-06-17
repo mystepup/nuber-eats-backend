@@ -1,17 +1,13 @@
-import { ObjectType, PickType } from "@nestjs/graphql";
+import { ObjectType, OmitType } from "@nestjs/graphql";
 import { UserEntity } from "@/src/users/entities/user.entity";
 
-export type User = Pick<
-    UserEntity,
-    "id" | "createdAt" | "updatedAt" | "email" | "role" | "verified"
->;
 @ObjectType()
-export class UserOutput extends PickType(
+export class UserOutput extends OmitType(
     UserEntity,
-    ["id", "createdAt", "updatedAt", "email", "role", "verified"] as const,
+    ["password"] as const,
     ObjectType,
 ) {
-    constructor(user: User | UserEntity) {
+    constructor(user: Partial<UserEntity>) {
         super();
         this.id = user.id;
         this.createdAt = user.createdAt;
